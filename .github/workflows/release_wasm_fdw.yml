@@ -17,25 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Rust
-        run: |
-          # install Rust
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal --default-toolchain 1.81.0 && \
-            rustup --version && \
-            rustc --version && \
-            cargo --version
+      - name: Set up Rust (nightly)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: wasm32-unknown-unknown
+          components: rustfmt
 
-          # add wasm32-unknown-unknown target
-          rustup target add wasm32-unknown-unknown
-
-          # install Wasm component
-          cargo install cargo-component --version 0.13.2
-
-          # install rustfmt for the toolchain
-          rustup component add rustfmt
-
-          # show all installed packagies
-          cargo install --list
+      - name: Install cargo-component
+        run: cargo install cargo-component
 
       - name: Build Wasm FDW
         run: |
